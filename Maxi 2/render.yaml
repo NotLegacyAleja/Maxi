@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: maxi-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: python server.py
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: MAXI_HOST
+        value: 0.0.0.0
+      - key: MAXI_PORT
+        value: 10000

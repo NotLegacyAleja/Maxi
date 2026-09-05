@@ -1,0 +1,10 @@
+{
+  "name": "Maxi Personal AI",
+  "short_name": "Maxi",
+  "description": "A personal AI workspace with Gemini conversations and local memory.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#070b12",
+  "theme_color": "#070b12",
+  "orientation": "portrait-primary"
+}

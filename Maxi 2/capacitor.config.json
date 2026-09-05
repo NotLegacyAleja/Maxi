@@ -1,0 +1,9 @@
+{
+  "appId": "com.maxi.personalai",
+  "appName": "Maxi",
+  "webDir": ".",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}

@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#070b12">
+  <meta name="description" content="Maxi is a personal AI workspace with Gemini conversations and local memory.">
+  <link rel="manifest" href="manifest.json">
+  <title>Maxi | Personal AI</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <div class="holo-backdrop" aria-hidden="true">
+      <div class="holo-grid"></div>
+      <div class="holo-word" data-text="MAXI">MAXI</div>
+      <div class="holo-scan"></div>
+    </div>
+    <header class="topbar">
+      <div class="brand-lockup">
+        <div class="maxi-mark" aria-hidden="true">M</div>
+        <div>
+          <p class="eyebrow">PERSONAL INTELLIGENCE</p>
+          <h1>Maxi</h1>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-button" id="historyButton" type="button" aria-label="Open chat history" title="Chat history">☷</button>
+        <button class="icon-button" id="memoryButton" type="button" aria-label="Open memory" title="Open memory">✦</button>
+        <button class="avatar-button" id="settingsButton" type="button" aria-label="AI settings" title="AI settings">A</button>
+      </div>
+    </header>
+
+    <section class="status-strip" aria-label="Maxi status">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="connectionStatus">Gemini not configured</span>
+      <span class="status-divider"></span>
+      <span class="quiet-text">Local-first memory active</span>
+    </section>
+    <section class="telemetry-strip" aria-label="Maxi telemetry">
+      <span><i class="telemetry-pulse"></i> CORE STABLE</span>
+      <span id="sessionClock">SESSION 00:00</span>
+      <span>LATENCY <b>--</b></span>
+      <span>PRESENCE <b id="presenceState">READY</b></span>
+      <span class="hud-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+    </section>
+
+    <nav class="mode-rail" aria-label="Maxi modes">
+      <button class="mode-chip active" type="button" data-mode="Chat">Chat</button>
+      <button class="mode-chip" type="button" data-mode="Think">Think</button>
+      <button class="mode-chip" type="button" data-mode="Research">Research</button>
+      <button class="mode-chip" type="button" data-mode="Vision">Vision</button>
+    </nav>
+
+    <section class="conversation" id="conversation" aria-live="polite">
+      <div class="date-label">TODAY · 09:41</div>
+      <article class="message maxi-message">
+        <div class="message-avatar">M</div>
+        <div class="message-content">
+          <div class="message-meta"><strong>Maxi</strong><span>09:41</span></div>
+          <div class="bubble">
+            <p id="greetingText">Good morning, Aleja. I’m here and ready.</p>
+            <p>What are we making clearer today?</p>
+          </div>
+        </div>
+      </article>
+      <div class="suggestions" id="suggestions">
+        <button type="button" class="suggestion">Plan my day</button>
+        <button type="button" class="suggestion">Help me think</button>
+        <button type="button" class="suggestion">Remember something</button>
+      </div>
+      <button class="systems-toggle" id="systemsToggle" type="button" aria-expanded="false"><span>⌘</span> Systems <small>8 capabilities</small><b>＋</b></button>
+      <section class="capability-grid collapsed" id="capabilityGrid" aria-label="Maxi capabilities">
+        <button class="capability-card" type="button" data-overlay="pc">
+          <span class="capability-icon">◫</span><span><strong>PC bridge</strong><small>Offline · permissioned</small></span><span class="card-arrow">›</span>
+        </button>
+        <button class="capability-card" type="button" data-overlay="voice">
+          <span class="capability-icon">◉</span><span><strong>Voice mode</strong><small>Ready for Gemini Live</small></span><span class="card-arrow">›</span>
+        </button>
+        <button class="capability-card" type="button" data-overlay="vision">
+          <span class="capability-icon">◌</span><span><strong>Visual analysis</strong><small>Images and files</small></span><span class="card-arrow">›</span>
+        </button>
+        <button class="capability-card" type="button" data-overlay="plugins">
+          <span class="capability-icon">⌘</span><span><strong>Capabilities</strong><small>0 plugins installed</small></span><span class="card-arrow">›</span>
+        </button>
+        <button class="capability-card" type="button" data-overlay="activity">
+          <span class="capability-icon">↯</span><span><strong>Activity log</strong><small>Local session events</small></span><span class="card-arrow">›</span>
+        </button>
+        <button class="capability-card" type="button" data-overlay="briefing">
+          <span class="capability-icon">☼</span><span><strong>Morning briefing</strong><small>Weather, news, priorities</small></span><span class="card-arrow">›</span>
+        </button>
+        <button class="capability-card" type="button" data-overlay="research">
+          <span class="capability-icon">⌕</span><span><strong>Web research</strong><small>Compare and synthesize</small></span><span class="card-arrow">›</span>
+        </button>
+        <button class="capability-card" type="button" data-overlay="games">
+          <span class="capability-icon">✦</span><span><strong>Games lounge</strong><small>Play with Maxi</small></span><span class="card-arrow">›</span>
+        </button>
+      </section>
+    </section>
+
+    <div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
+
+    <aside class="memory-drawer" id="memoryDrawer" aria-hidden="true">
+      <div class="drawer-header">
+        <div>
+          <p class="eyebrow">YOUR CONTEXT</p>
+          <h2>Memory</h2>
+        </div>
+        <button class="close-button" id="closeMemory" type="button" aria-label="Close memory">×</button>
+      </div>
+      <p class="drawer-intro">Maxi keeps useful details on this device so conversations can feel continuous.</p>
+      <div class="memory-list" id="memoryList"></div>
+      <form class="memory-form" id="memoryForm">
+        <label for="memoryInput">Add a memory</label>
+        <div class="memory-input-row">
+          <input id="memoryInput" maxlength="100" placeholder="e.g. I prefer concise answers" autocomplete="off">
+          <button class="add-memory" type="submit" aria-label="Add memory">+</button>
+        </div>
+      </form>
+      <button class="clear-memory" id="clearMemory" type="button">Clear saved context</button>
+    </aside>
+
+    <aside class="history-drawer" id="historyDrawer" aria-hidden="true">
+      <div class="drawer-header">
+        <div><p class="eyebrow">CONVERSATIONS</p><h2>Chat history</h2></div>
+        <button class="close-button" id="closeHistory" type="button" aria-label="Close chat history">×</button>
+      </div>
+      <button class="new-chat-button" id="newChatButton" type="button"><span>＋</span> New chat</button>
+      <div class="chat-list" id="chatList"></div>
+      <button class="clear-memory clear-all-chats" id="clearAllChats" type="button">Delete all chats</button>
+    </aside>
+
+    <aside class="settings-drawer" id="settingsDrawer" aria-hidden="true">
+      <div class="drawer-header">
+        <div>
+          <p class="eyebrow">MAXI CONNECTION</p>
+          <h2>AI connection</h2>
+        </div>
+        <button class="close-button" id="closeSettings" type="button" aria-label="Close AI settings">×</button>
+      </div>
+      <p class="drawer-intro">Paste your Google AI Studio key to connect Maxi directly to Gemini.</p>
+      <form class="settings-form" id="settingsForm">
+        <label for="personalityInput">Maxi's personality</label>
+        <select id="personalityInput">
+          <option value="warm">Warm and perceptive</option>
+          <option value="sharp">Sharp and direct</option>
+          <option value="calm">Calm and grounding</option>
+          <option value="playful">Playful and inventive</option>
+        </select>
+        <label for="apiKeyInput">Gemini API key</label>
+        <input id="apiKeyInput" type="password" placeholder="Paste your Google AI Studio key" autocomplete="off">
+        <label for="modelInput">Model name</label>
+        <input id="modelInput" placeholder="gemini-2.5-flash" autocomplete="off">
+        <button class="save-settings" type="submit">Save Maxi settings</button>
+      </form>
+      <button class="clear-conversation" id="clearConversation" type="button">Clear conversation history</button>
+      <p class="settings-hint">The key is stored only in this browser. Do not use this mode on a shared device or in a public app.</p>
+    </aside>
+
+    <aside class="overlay-panel" id="overlayPanel" tabindex="-1" aria-hidden="true">
+      <div class="overlay-header">
+        <div class="overlay-drag-handle"><p class="eyebrow">MAXI OVERLAY · DRAG TO MOVE</p><h2 id="overlayTitle">PC bridge</h2></div>
+        <button class="close-button" id="closeOverlay" type="button" aria-label="Close overlay">×</button>
+      </div>
+      <div id="overlayContent"></div>
+    </aside>
+
+    <footer class="composer-wrap">
+      <div class="connection-note"><span class="lock-icon">⌁</span> PC connection is not enabled yet</div>
+      <form class="composer" id="composer">
+        <button class="composer-tool" id="attachButton" type="button" aria-label="Attach image or file" title="Attach image or file">＋</button>
+        <textarea id="messageInput" rows="1" placeholder="Message Maxi..." aria-label="Message Maxi"></textarea>
+        <button class="composer-tool" id="voiceButton" type="button" aria-label="Use voice input" title="Use voice input">◉</button>
+        <button class="send-button" type="submit" aria-label="Send message">↑</button>
+        <input id="fileInput" type="file" accept="image/*,.txt,.md,.json,.csv,.log,.pdf" hidden>
+      </form>
+      <p class="disclaimer">Maxi can make mistakes. Check important information.</p>
+    </footer>
+    <nav class="command-dock" aria-label="Maxi command dock">
+      <button class="dock-item active" type="button" data-dock="chat"><span>⌁</span><small>Chat</small></button>
+      <button class="dock-item" type="button" data-dock="dashboard"><span>◫</span><small>Dashboard</small></button>
+      <button class="dock-item" type="button" data-dock="games"><span>✦</span><small>Games</small></button>
+      <button class="dock-item" type="button" data-dock="memory"><span>✦</span><small>Memory</small></button>
+      <button class="dock-item" type="button" data-dock="settings"><span>⚙</span><small>Settings</small></button>
+    </nav>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
